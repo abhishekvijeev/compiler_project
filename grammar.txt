@@ -1,0 +1,82 @@
+program: preProcessorDirective externDeclaration mainFunction
+
+preProcessorDirective: hashOperator include < header_file >  preProcessorDirective 
+					| #define identifier number preProcessorDirective 
+					| e
+
+headerFile: identifer '.h'
+
+externDeclaration: extern declarationStatement ;
+
+declarationStatement: dataType variable
+
+optDeclarationStatement:	dataType variable 
+							| e
+
+variable: identifier variableDash
+
+variableDash: , identifier variableDash 
+				| e
+
+mainFunction: int main_dash
+
+mainDash: main(){statements} 
+		  | main(int argc, char *argv[]){statements}
+
+
+statements:	optDeclarationStatement ; statements
+			| initializationStatement ; statements
+			| assignmentStatement ; statements
+			| do{statements} while(expression); statements
+			| {statements} statements
+			| e
+			
+
+
+initializationStatement: dataType initstat 
+						 | e
+
+initstat: identifier assignmentOperator E 
+			| multipleInitialization
+
+
+multipleInitialization: identifier assignmentOperator E multinit
+
+multinit : , multipleInitialization 
+				| e
+
+assignmentStatement: identifier assignmentOperator E
+						| e
+
+expression: E relationalOperator E 
+			| E logicalOperator E 
+			| true 
+			| false
+
+E: F E1
+
+E1: + F E1 
+		| e
+
+F: G F1
+
+F1: - G F1 
+		| e
+
+G: H G1
+
+G1: * H G1 
+		| e
+
+H: I H1
+
+H1: / I H1 
+		| e
+
+I: - I
+	| identifier 
+	| number
+
+relationalOperator: < | > | <= | >= | == | !=
+
+logicalOperator: && | || | !
